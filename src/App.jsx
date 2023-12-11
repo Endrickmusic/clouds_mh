@@ -1,4 +1,4 @@
-import { useTexture, useFBO, OrthographicCamera } from "@react-three/drei";
+import { useTexture, useFBO, OrthographicCamera, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, useThree, createPortal, extend } from "@react-three/fiber";
 import { useControls } from "leva";
 import { useRef, Suspense } from "react";
@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 import './index.css';
 
-import BicubicUpscaleMaterial from './BicubicUpscaleMaterial';
+import BicubicUpscaleMaterial from './bicubicUpscaleMaterial.js';
 import getFullscreenTriangle from './utils';
 import vertexShader from './shader/vertexShader';
 import fragmentShader from './shader/fragmentShader'; 
@@ -94,8 +94,11 @@ const Raymarching = () => {
   return (
     <>
       {createPortal(
-        <mesh ref={mesh} scale={[viewport.width, viewport.height, 1]}>
-          <planeGeometry args={[1, 1]} />
+        <mesh ref={mesh} scale={[viewport.width/1.5, viewport.height/1.5, 1]}>
+          <planeGeometry args={[1, 1]} 
+            transparent = {true}
+            alphaHash = {true}
+          />
           <shaderMaterial
             key={uuidv4()}
             fragmentShader={fragmentShader}
@@ -113,7 +116,9 @@ const Raymarching = () => {
         geometry={getFullscreenTriangle()}
         frustumCulled={false}
       >
-        <meshBasicMaterial />
+        <meshBasicMaterial 
+
+        />
       </mesh>
     </>
   );
@@ -122,9 +127,14 @@ const Raymarching = () => {
 const Scene = () => {
   return (
     <Canvas camera={{ position: [0, 0, 6] }} dpr={DPR}>
-      <color attach="background" args={['yellow']} />
+      <OrbitControls />
       <Suspense fallback={null}>
+        <color attach="background" args={['yellow']} />
         <Raymarching />
+        <mesh rotation={[0, -Math.PI * 0.4, -Math.PI * 0.2]}>
+          <boxGeometry />
+          <meshNormalMaterial />
+        </mesh>
       </Suspense>
     </Canvas>
   );
