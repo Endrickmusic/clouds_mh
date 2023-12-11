@@ -122,6 +122,7 @@ const Raymarching = () => {
 const Scene = () => {
   return (
     <Canvas camera={{ position: [0, 0, 6] }} dpr={DPR}>
+      <color attach="background" args={['yellow']} />
       <Suspense fallback={null}>
         <Raymarching />
       </Suspense>
